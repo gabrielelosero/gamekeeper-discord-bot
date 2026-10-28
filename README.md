@@ -4,9 +4,13 @@ Bot di esempio per server Discord di community di gioco: comandi slash, ruoli co
 messaggio di benvenuto e stato di un server Minecraft. Scritto in Python con
 [discord.py](https://github.com/Rapptz/discord.py), si avvia con un solo comando grazie a Docker.
 
-<!-- Screenshot: aggiungere le immagini in docs/screenshots/ -->
-<!-- ![Pannello ruoli](docs/screenshots/ruoli.png) -->
-<!-- ![Stato server Minecraft](docs/screenshots/status.png) -->
+| Ruoli con pulsanti | Benvenuto ai nuovi membri |
+|---|---|
+| ![Pannello ruoli con pulsanti](docs/screenshots/ruoli.png) | ![Messaggio di benvenuto](docs/screenshots/benvenuto.png) |
+
+| Stato di un server Minecraft | Informazioni sul bot |
+|---|---|
+| ![/status con server online e offline](docs/screenshots/status.png) | ![/info](docs/screenshots/info.png) |
 
 ## Funzionalità
 
