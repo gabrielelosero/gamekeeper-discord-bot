@@ -6,7 +6,7 @@ welcome messages and Minecraft server status. Written in Python with
 
 | Button roles | Welcome new members |
 |---|---|
-| ![Role panel with buttons](docs/screenshots/ruoli.png) | ![Welcome message](docs/screenshots/benvenuto.png) |
+| ![Role panel with buttons](docs/screenshots/roles.png) | ![Welcome message](docs/screenshots/welcome.png) |
 
 | Minecraft server status | Bot info |
 |---|---|
