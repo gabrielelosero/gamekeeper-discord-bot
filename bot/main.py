@@ -12,6 +12,7 @@ EXTENSIONS = [
     "bot.cogs.general",
     "bot.cogs.roles",
     "bot.cogs.welcome",
+    "bot.cogs.status",
 ]
 
 log = logging.getLogger("bot")
