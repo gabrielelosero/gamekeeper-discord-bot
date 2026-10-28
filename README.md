@@ -1,77 +1,77 @@
-# Bot Discord per community di gioco
+# GameKeeper: Discord bot for gaming communities
 
-Bot di esempio per server Discord di community di gioco: comandi slash, ruoli con pulsanti,
-messaggio di benvenuto e stato di un server Minecraft. Scritto in Python con
-[discord.py](https://github.com/Rapptz/discord.py), si avvia con un solo comando grazie a Docker.
+An example bot for gaming community Discord servers: slash commands, button roles,
+welcome messages and Minecraft server status. Written in Python with
+[discord.py](https://github.com/Rapptz/discord.py), it starts with a single command thanks to Docker.
 
-| Ruoli con pulsanti | Benvenuto ai nuovi membri |
+| Button roles | Welcome new members |
 |---|---|
-| ![Pannello ruoli con pulsanti](docs/screenshots/ruoli.png) | ![Messaggio di benvenuto](docs/screenshots/benvenuto.png) |
+| ![Role panel with buttons](docs/screenshots/ruoli.png) | ![Welcome message](docs/screenshots/benvenuto.png) |
 
-| Stato di un server Minecraft | Informazioni sul bot |
+| Minecraft server status | Bot info |
 |---|---|
-| ![/status con server online e offline](docs/screenshots/status.png) | ![/info](docs/screenshots/info.png) |
+| ![/status with an online and an offline server](docs/screenshots/status.png) | ![/info](docs/screenshots/info.png) |
 
-## Funzionalità
+## Features
 
-| Comando / evento | Cosa fa | Chi può usarlo |
+| Command / event | What it does | Who can use it |
 |---|---|---|
-| `/ping` | Risponde con la latenza del bot | Tutti |
-| `/info` | Nome, server, uptime e latenza del bot | Tutti |
-| `/ruoli` | Pubblica un pannello con un pulsante per ogni ruolo (fino a 5): chi clicca riceve il ruolo, chi riclicca lo toglie | Chi può gestire i ruoli |
-| Nuovo membro | Messaggio di benvenuto con avatar nel canale configurato | Automatico |
-| `/benvenuto-prova` | Invia il benvenuto per te, per vedere come appare | Chi può gestire il server |
-| `/status [indirizzo]` | Stato di un server Minecraft Java: online/offline, giocatori, versione, ping, icona | Tutti |
+| `/ping` | Replies with the bot's latency | Everyone |
+| `/info` | Bot name, servers, uptime and latency | Everyone |
+| `/roles` | Posts a panel with one button per role (up to 5): click to get the role, click again to remove it | Members who can manage roles |
+| New member | Welcome message with avatar in the configured channel | Automatic |
+| `/welcome-test` | Sends the welcome message for yourself, to preview it | Members who can manage the server |
+| `/status [address]` | Minecraft Java server status: online/offline, players, version, ping, icon | Everyone |
 
-I pulsanti dei ruoli continuano a funzionare anche dopo un riavvio del bot, senza database:
-l'ID del ruolo è salvato nel pulsante stesso.
+Role buttons keep working after the bot restarts, with no database:
+the role ID is stored in the button itself.
 
-## 1. Creare il bot nel Developer Portal
+## 1. Create the bot in the Developer Portal
 
-1. Vai su <https://discord.com/developers/applications> e clicca **New Application**.
-2. Nella pagina **Bot**:
-   - clicca **Reset Token** e copia il token (è una password: non condividerlo);
-   - in *Privileged Gateway Intents* attiva **Server Members Intent** (serve per il benvenuto);
-   - lascia **spento** *Requires OAuth2 Code Grant*.
-3. Nella pagina **OAuth2 → URL Generator** seleziona gli scope `bot` e `applications.commands`
-   e i permessi *View Channels*, *Send Messages*, *Embed Links*, *Manage Roles*.
-   Apri il link generato e invita il bot nel tuo server.
-4. Nelle impostazioni del server, in **Ruoli**, trascina il ruolo del bot **sopra** i ruoli che
-   dovrà assegnare: Discord permette a un bot di gestire solo i ruoli sotto il suo.
+1. Go to <https://discord.com/developers/applications> and click **New Application**.
+2. On the **Bot** page:
+   - click **Reset Token** and copy the token (it's a password: never share it);
+   - under *Privileged Gateway Intents* enable **Server Members Intent** (needed for welcome messages);
+   - leave *Requires OAuth2 Code Grant* **off**.
+3. On **OAuth2 → URL Generator** select the `bot` and `applications.commands` scopes
+   and the *View Channels*, *Send Messages*, *Embed Links*, *Manage Roles* permissions.
+   Open the generated link and invite the bot to your server.
+4. In your server settings, under **Roles**, drag the bot's role **above** the roles it
+   should assign: Discord only lets a bot manage roles below its own.
 
-## 2. Configurazione
+## 2. Configuration
 
 ```bash
 cp .env.example .env
 ```
 
-| Variabile | Obbligatoria | Descrizione |
+| Variable | Required | Description |
 |---|---|---|
-| `DISCORD_TOKEN` | Sì | Token del bot |
-| `GUILD_ID` | No | ID del server: i comandi compaiono subito lì invece che dopo la propagazione globale |
-| `WELCOME_CHANNEL_ID` | No | ID del canale per il benvenuto |
-| `WELCOME_MESSAGE` | No | Testo del benvenuto; `{user}` = menzione del membro, `{server}` = nome del server |
-| `MC_HOST` / `MC_PORT` | No | Server Minecraft predefinito per `/status` (porta predefinita 25565) |
+| `DISCORD_TOKEN` | Yes | Bot token |
+| `GUILD_ID` | No | Server ID: commands show up there instantly instead of after global propagation |
+| `WELCOME_CHANNEL_ID` | No | ID of the welcome channel |
+| `WELCOME_MESSAGE` | No | Welcome text; `{user}` = member mention, `{server}` = server name |
+| `MC_HOST` / `MC_PORT` | No | Default Minecraft server for `/status` (default port 25565) |
 
-Per copiare gli ID attiva in Discord *Impostazioni → Avanzate → Modalità sviluppatore*,
-poi tasto destro su server o canale → **Copia ID**.
+To copy IDs, enable *Settings → Advanced → Developer Mode* in Discord,
+then right-click a server or channel → **Copy ID**.
 
-## 3. Avvio
+## 3. Running
 
-### Con Docker (consigliato)
+### With Docker (recommended)
 
 ```bash
-docker compose up -d --build   # costruisce l'immagine e avvia il bot in background
-docker compose logs -f         # log in tempo reale
-docker compose down            # ferma il bot
+docker compose up -d --build   # build the image and start the bot in the background
+docker compose logs -f         # follow the logs
+docker compose down            # stop the bot
 ```
 
-Il container si riavvia da solo in caso di errore o di riavvio della macchina
-(`restart: unless-stopped`) e gira con un utente senza privilegi.
+The container restarts automatically on errors and after a reboot
+(`restart: unless-stopped`) and runs as an unprivileged user.
 
-### Senza Docker
+### Without Docker
 
-Serve Python 3.11 o successivo.
+Requires Python 3.11 or later.
 
 ```bash
 python3 -m venv .venv
@@ -79,23 +79,23 @@ python3 -m venv .venv
 .venv/bin/python -m bot.main
 ```
 
-## Struttura
+## Project structure
 
 ```
 bot/
-├── main.py          # avvio, caricamento dei moduli, sincronizzazione comandi
-├── config.py        # lettura delle impostazioni da .env
-└── cogs/            # un modulo per funzionalità
+├── main.py          # startup, cog loading, command sync
+├── config.py        # settings read from .env
+└── cogs/            # one module per feature
     ├── general.py   # /ping, /info
-    ├── roles.py     # /ruoli e pulsanti
-    ├── welcome.py   # benvenuto e /benvenuto-prova
-    └── status.py    # /status Minecraft
+    ├── roles.py     # /roles and buttons
+    ├── welcome.py   # welcome message and /welcome-test
+    └── status.py    # /status for Minecraft
 ```
 
-Per aggiungere una funzionalità basta creare un nuovo file in `bot/cogs/` e aggiungerlo
-alla lista `EXTENSIONS` in `bot/main.py`.
+To add a feature, create a new file in `bot/cogs/` and add it to the
+`EXTENSIONS` list in `bot/main.py`.
 
-## Sicurezza
+## Security
 
-Il file `.env` è escluso da git e dall'immagine Docker: il token non finisce mai nel
-repository. Se un token viene esposto, rigeneralo subito con **Reset Token**.
+The `.env` file is excluded from git and from the Docker image: the token never ends up
+in the repository. If a token is ever exposed, regenerate it right away with **Reset Token**.

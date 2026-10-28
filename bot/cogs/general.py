@@ -1,4 +1,4 @@
-"""Comandi generali: /ping e /info."""
+"""General commands: /ping and /info."""
 
 import platform
 import time
@@ -13,12 +13,12 @@ class General(commands.Cog):
         self.bot = bot
         self.started_at = time.monotonic()
 
-    @app_commands.command(name="ping", description="Controlla che il bot risponda e mostra la latenza.")
+    @app_commands.command(name="ping", description="Check that the bot is responding and show its latency.")
     async def ping(self, interaction: discord.Interaction) -> None:
         latency_ms = round(self.bot.latency * 1000)
-        await interaction.response.send_message(f"🏓 Pong! Latenza: **{latency_ms} ms**", ephemeral=True)
+        await interaction.response.send_message(f"🏓 Pong! Latency: **{latency_ms} ms**", ephemeral=True)
 
-    @app_commands.command(name="info", description="Informazioni sul bot.")
+    @app_commands.command(name="info", description="Information about the bot.")
     async def info(self, interaction: discord.Interaction) -> None:
         uptime = int(time.monotonic() - self.started_at)
         hours, rest = divmod(uptime, 3600)
@@ -26,13 +26,13 @@ class General(commands.Cog):
 
         embed = discord.Embed(
             title=self.bot.user.name,
-            description="Bot di esempio per community di gioco: ruoli, benvenuto e stato del server.",
+            description="Example bot for gaming communities: roles, welcome messages and game server status.",
             color=discord.Color.blurple(),
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
-        embed.add_field(name="Server", value=str(len(self.bot.guilds)))
+        embed.add_field(name="Servers", value=str(len(self.bot.guilds)))
         embed.add_field(name="Uptime", value=f"{hours}h {minutes}m {seconds}s")
-        embed.add_field(name="Latenza", value=f"{round(self.bot.latency * 1000)} ms")
+        embed.add_field(name="Latency", value=f"{round(self.bot.latency * 1000)} ms")
         embed.set_footer(text=f"discord.py {discord.__version__} · Python {platform.python_version()}")
 
         await interaction.response.send_message(embed=embed)

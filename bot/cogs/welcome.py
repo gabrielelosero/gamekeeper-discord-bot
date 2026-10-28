@@ -1,4 +1,4 @@
-"""Messaggio di benvenuto automatico per i nuovi membri."""
+"""Automatic welcome message for new members."""
 
 import logging
 
@@ -17,23 +17,23 @@ class Welcome(commands.Cog):
 
     def build_embed(self, member: discord.Member) -> discord.Embed:
         text = self.template.format(user=member.mention, server=member.guild.name)
-        embed = discord.Embed(title=f"Benvenuto, {member.display_name}!", description=text, color=discord.Color.green())
+        embed = discord.Embed(title=f"Welcome, {member.display_name}!", description=text, color=discord.Color.green())
         embed.set_thumbnail(url=member.display_avatar.url)
-        embed.set_footer(text=f"Sei il membro numero {member.guild.member_count}")
+        embed.set_footer(text=f"You are member #{member.guild.member_count}")
         return embed
 
     async def send_welcome(self, member: discord.Member) -> bool:
-        """Invia il benvenuto nel canale configurato. Restituisce False se non è possibile."""
+        """Send the welcome message to the configured channel. Returns False if that's not possible."""
         channel = member.guild.get_channel(self.channel_id) if self.channel_id else None
         if not isinstance(channel, discord.TextChannel):
-            log.warning("Canale di benvenuto non configurato o non trovato (WELCOME_CHANNEL_ID=%s)", self.channel_id)
+            log.warning("Welcome channel not configured or not found (WELCOME_CHANNEL_ID=%s)", self.channel_id)
             return False
 
         try:
-            # La menzione nel testo fa arrivare la notifica al nuovo membro.
+            # Mentioning the member in the message content sends them a notification.
             await channel.send(content=member.mention, embed=self.build_embed(member))
         except discord.Forbidden:
-            log.warning("Permessi insufficienti per scrivere in #%s", channel.name)
+            log.warning("Missing permissions to write in #%s", channel.name)
             return False
         return True
 
@@ -42,16 +42,16 @@ class Welcome(commands.Cog):
         if not member.bot:
             await self.send_welcome(member)
 
-    @app_commands.command(name="benvenuto-prova", description="Invia il messaggio di benvenuto per te, per vedere come appare.")
+    @app_commands.command(name="welcome-test", description="Send the welcome message for yourself, to preview it.")
     @app_commands.default_permissions(manage_guild=True)
     @app_commands.guild_only()
     async def welcome_test(self, interaction: discord.Interaction) -> None:
         if await self.send_welcome(interaction.user):
-            await interaction.response.send_message(f"Inviato in <#{self.channel_id}>.", ephemeral=True)
+            await interaction.response.send_message(f"Sent to <#{self.channel_id}>.", ephemeral=True)
         else:
             await interaction.response.send_message(
-                "Non riesco a inviare il benvenuto: controlla WELCOME_CHANNEL_ID nel file .env "
-                "e che il bot possa scrivere in quel canale.",
+                "I can't send the welcome message: check WELCOME_CHANNEL_ID in the .env file "
+                "and make sure the bot can write in that channel.",
                 ephemeral=True,
             )
 

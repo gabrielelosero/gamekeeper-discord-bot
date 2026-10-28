@@ -1,4 +1,4 @@
-"""/status: stato di un server Minecraft (Java) e giocatori connessi."""
+"""/status: status of a Minecraft (Java) server and online players."""
 
 import asyncio
 import base64
@@ -12,7 +12,7 @@ from mcstatus import JavaServer
 
 log = logging.getLogger("bot.status")
 
-QUERY_TIMEOUT = 5  # secondi
+QUERY_TIMEOUT = 5  # seconds
 MAX_PLAYER_NAMES = 20
 
 
@@ -20,47 +20,47 @@ class Status(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         config = bot.config
-        # Indirizzo predefinito: "host:porta" dal file .env, se configurato.
+        # Default address: "host:port" from the .env file, if configured.
         self.default_address = f"{config.mc_host}:{config.mc_port}" if config.mc_host else None
 
-    @app_commands.command(name="status", description="Mostra se il server Minecraft è online e chi sta giocando.")
-    @app_commands.describe(indirizzo="Indirizzo del server (es. play.esempio.it); se vuoto usa quello configurato")
-    async def status(self, interaction: discord.Interaction, indirizzo: str | None = None) -> None:
-        address = (indirizzo or self.default_address or "").strip()
+    @app_commands.command(name="status", description="Show whether the Minecraft server is online and who's playing.")
+    @app_commands.describe(address="Server address (e.g. play.example.com); if empty, uses the configured one")
+    async def status(self, interaction: discord.Interaction, address: str | None = None) -> None:
+        address = (address or self.default_address or "").strip()
         if not address:
             await interaction.response.send_message(
-                "Nessun server configurato: imposta MC_HOST nel file .env oppure indica un indirizzo.",
+                "No server configured: set MC_HOST in the .env file or pass an address.",
                 ephemeral=True,
             )
             return
 
-        # La richiesta può richiedere qualche secondo: Discord vuole una risposta entro 3.
+        # The query can take a few seconds: Discord expects a response within 3.
         await interaction.response.defer()
 
         try:
             server = await JavaServer.async_lookup(address, timeout=QUERY_TIMEOUT)
             status = await asyncio.wait_for(server.async_status(), timeout=QUERY_TIMEOUT)
-        except Exception as exc:  # timeout, DNS, connessione rifiutata, risposta non valida...
-            log.info("Server %s non raggiungibile: %r", address, exc)
+        except Exception as exc:  # timeout, DNS, connection refused, invalid response...
+            log.info("Server %s unreachable: %r", address, exc)
             embed = discord.Embed(
                 title="🔴 Offline",
-                description=f"Il server `{address}` non risponde.",
+                description=f"The server `{address}` is not responding.",
                 color=discord.Color.red(),
             )
             await interaction.followup.send(embed=embed)
             return
 
         embed = discord.Embed(title="🟢 Online", description=self._motd(status), color=discord.Color.green())
-        embed.add_field(name="Indirizzo", value=f"`{address}`")
-        embed.add_field(name="Giocatori", value=f"{status.players.online}/{status.players.max}")
-        embed.add_field(name="Versione", value=status.version.name[:100])
+        embed.add_field(name="Address", value=f"`{address}`")
+        embed.add_field(name="Players", value=f"{status.players.online}/{status.players.max}")
+        embed.add_field(name="Version", value=status.version.name[:100])
         embed.add_field(name="Ping", value=f"{round(status.latency)} ms")
 
         names = [p.name for p in (status.players.sample or [])][:MAX_PLAYER_NAMES]
         if names:
-            embed.add_field(name="Connessi ora", value=", ".join(discord.utils.escape_markdown(n) for n in names), inline=False)
+            embed.add_field(name="Online now", value=", ".join(discord.utils.escape_markdown(n) for n in names), inline=False)
 
-        # L'icona del server arriva come immagine base64: la alleghiamo come miniatura.
+        # The server icon comes as a base64 image: attach it as the thumbnail.
         icon = self._icon_file(status.icon)
         if icon:
             embed.set_thumbnail(url="attachment://icon.png")
@@ -70,7 +70,7 @@ class Status(commands.Cog):
 
     @staticmethod
     def _motd(status) -> str:
-        """Messaggio del giorno senza codici colore e spazi di allineamento."""
+        """Message of the day without color codes and alignment spaces."""
         lines = (line.strip() for line in status.motd.to_plain().splitlines())
         text = "\n".join(line for line in lines if line)
         return discord.utils.escape_markdown(text)[:500] or "​"
