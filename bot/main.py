@@ -11,6 +11,7 @@ from bot.config import Config, load_config
 EXTENSIONS = [
     "bot.cogs.general",
     "bot.cogs.roles",
+    "bot.cogs.welcome",
 ]
 
 log = logging.getLogger("bot")
@@ -19,6 +20,9 @@ log = logging.getLogger("bot")
 class CommunityBot(commands.Bot):
     def __init__(self, config: Config):
         intents = discord.Intents.default()
+        # Necessario per ricevere on_member_join: va attivato anche nel Developer Portal
+        # (Bot > Privileged Gateway Intents > Server Members Intent).
+        intents.members = True
         super().__init__(command_prefix=commands.when_mentioned, intents=intents)
         self.config = config
 

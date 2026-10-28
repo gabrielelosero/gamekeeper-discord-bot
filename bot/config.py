@@ -21,6 +21,8 @@ class Config:
     # in sviluppo compaiono subito, invece di attendere la propagazione globale.
     guild_id: int | None
     welcome_channel_id: int | None
+    # Testo del benvenuto: {user} diventa la menzione del membro, {server} il nome del server.
+    welcome_message: str
     mc_host: str
     mc_port: int
 
@@ -34,6 +36,8 @@ def load_config() -> Config:
         token=token,
         guild_id=_optional_int("GUILD_ID"),
         welcome_channel_id=_optional_int("WELCOME_CHANNEL_ID"),
+        welcome_message=os.getenv("WELCOME_MESSAGE", "").strip()
+        or "Ciao {user}, benvenuto su **{server}**! Passa dal pannello ruoli per scegliere i tuoi giochi.",
         mc_host=os.getenv("MC_HOST", "").strip(),
         mc_port=_optional_int("MC_PORT") or 25565,
     )
