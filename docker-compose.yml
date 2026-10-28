@@ -1,0 +1,12 @@
+services:
+  bot:
+    build: .
+    container_name: discord-bot
+    # Token e impostazioni restano nel file .env, fuori dall'immagine
+    env_file: .env
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
