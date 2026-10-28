@@ -4,6 +4,9 @@ An example bot for gaming community Discord servers: slash commands, button role
 welcome messages and Minecraft server status. Written in Python with
 [discord.py](https://github.com/Rapptz/discord.py), it starts with a single command thanks to Docker.
 
+Looking for a server to monitor? See [minecraft-server-docker](https://github.com/gabrielelosero/minecraft-server-docker),
+a managed Minecraft server with automatic backups that works out of the box with `/status`.
+
 | Button roles | Welcome new members |
 |---|---|
 | ![Role panel with buttons](docs/screenshots/roles.png) | ![Welcome message](docs/screenshots/welcome.png) |
